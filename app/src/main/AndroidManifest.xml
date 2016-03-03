@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.james.chargescreen" >
+
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Charge Screen"
+        android:theme="@style/AppTheme"
+        tools:replace="android:label" >
+        <activity
+            android:name=".Prefers"
+            android:label="Preferences"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".ChargeLauncher" >
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".OtherChargeLauncher" >
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".Ripples"
+            android:excludeFromRecents="true"
+            android:label="Charge Screen" >
+        </activity>
+        <activity
+            android:name=".FirstTime"
+            android:label="@string/title_activity_first_time"
+            android:parentActivityName=".Prefers"
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.james.chargescreen.Prefers" />
+        </activity>
+        <activity
+            android:name=".About"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".Prefers" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.james.chargescreen.Prefers" />
+        </activity>
+    </application>
+
+</manifest>
