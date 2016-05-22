@@ -24,6 +24,12 @@
                 android:layout_height="?attr/actionBarSize"
                 android:id="@+id/toolbar" />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/logo"/>
+
             <TextView
                 android:text="Settings"
                 android:layout_width="wrap_content"
