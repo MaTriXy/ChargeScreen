@@ -9,12 +9,11 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Charge Screen"
-        android:theme="@style/AppTheme"
-        tools:replace="android:label" >
+        android:theme="@style/AppTheme" >
+
         <activity
             android:name=".Prefers"
-            android:label="Preferences"
+            android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,21 +36,13 @@
         <activity
             android:name=".Ripples"
             android:excludeFromRecents="true"
-            android:label="Charge Screen" >
-        </activity>
+            android:label="@string/app_name" />
+
         <activity
             android:name=".FirstTime"
             android:label="@string/title_activity_first_time"
             android:parentActivityName=".Prefers"
             android:theme="@style/Theme.AppCompat.NoActionBar" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.james.chargescreen.Prefers" />
-        </activity>
-        <activity
-            android:name=".About"
-            android:label="@string/title_activity_about"
-            android:parentActivityName=".Prefers" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.james.chargescreen.Prefers" />

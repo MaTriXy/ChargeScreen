@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ChargeScreen</string>
+    <string name="app_name">Charge Screen</string>
 
     <color name="red">#F44336</color>
     <color name="redd">#D32F2F</color>

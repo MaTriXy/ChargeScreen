@@ -1,6 +1,7 @@
 package com.james.chargescreen;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,52 +9,62 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.view.View;
+import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.skyfishjy.library.RippleBackground;
 
-
 public class Ripples extends Activity {
 
-    boolean isDark, isFull;
-    int cColor, bColor, navColor;
+    boolean isDark;
+    int backgroundColor, progressBarColor, systemBarColor;
+
     TextView tv;
     ProgressBar progressBar;
+    RippleBackground rippleBackground;
+
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final SharedPreferences settings = getSharedPreferences("com.james.chargescreen", 0);
-        isFull = settings.getBoolean("isFull", false);
-        if(isFull){
-            // remove title
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        isDark = prefs.getBoolean("isDark", false);
+
+        if (prefs.getBoolean("isFullScreen", false)) {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
         setContentView(R.layout.activity_ripples);
 
-        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-        final RippleBackground rippleBackground = (RippleBackground)findViewById(R.id.content);
-        rippleBackground.startRippleAnimation();
+        rippleBackground = (RippleBackground)findViewById(R.id.content);
         tv = (TextView) findViewById(R.id.chargepercent);
-
-        isDark = settings.getBoolean("isDark", false);
-        bColor = settings.getInt("bg", getResources().getColor(R.color.light));
-        cColor = settings.getInt("charge", getResources().getColor(R.color.teal));
-        navColor = settings.getInt("a1", getResources().getColor(R.color.lightblu));
-
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.getProgressDrawable().setColorFilter(cColor, PorterDuff.Mode.SRC_IN);
+
+        rippleBackground.startRippleAnimation();
+
+        backgroundColor = prefs.getInt("backgroundColor", ContextCompat.getColor(this, R.color.light));
+        progressBarColor = prefs.getInt("progressBarColor", ContextCompat.getColor(this, R.color.teal));
+        systemBarColor = prefs.getInt("systemBarColor", ContextCompat.getColor(this, R.color.lightblu));
+
+        ((ImageView) findViewById(R.id.backgroundImage)).setImageDrawable(WallpaperManager.getInstance(this).getDrawable());
+        ((ImageView) findViewById(R.id.backgroundTint)).setImageDrawable(new ColorDrawable(backgroundColor));
+
+        progressBar.getProgressDrawable().setColorFilter(progressBarColor, PorterDuff.Mode.SRC_IN);
 
         Intent batteryIntent = this.getApplicationContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int rawlevel = batteryIntent.getIntExtra("level", -1);
@@ -71,10 +82,10 @@ public class Ripples extends Activity {
             progressBar.setProgress(progress);
         }
 
-        if(isColorDark(bColor)){
-            tv.setTextColor(getResources().getColor(R.color.white));
-        }else{
-            tv.setTextColor(getResources().getColor(R.color.black));
+        if (isColorDark(backgroundColor)){
+            tv.setTextColor(Color.WHITE);
+        } else {
+            tv.setTextColor(Color.BLACK);
         }
 
         if(isDark){
@@ -84,20 +95,20 @@ public class Ripples extends Activity {
         }
 
         if(android.os.Build.VERSION.SDK_INT >= 21){
-            getWindow().setStatusBarColor(navColor);
-            getWindow().setNavigationBarColor(navColor);
+            getWindow().setStatusBarColor(systemBarColor);
+            getWindow().setNavigationBarColor(systemBarColor);
         }
 
         FrameLayout fl = (FrameLayout) findViewById(R.id.fl);
-        fl.setBackgroundColor(bColor);
+        fl.setBackgroundColor(backgroundColor);
     }
 
-    public boolean isColorDark(int color){
+    boolean isColorDark(int color){
         double darkness = 1-(0.299* Color.red(color) + 0.587*Color.green(color) + 0.114* Color.blue(color))/255;
         return darkness >= 0.5;
     }
 
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+    private BroadcastReceiver batteryReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context ctxt, Intent intent) {
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);

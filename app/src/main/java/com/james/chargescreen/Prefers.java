@@ -1,235 +1,183 @@
 package com.james.chargescreen;
 
-import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.Toast;
 import com.gc.materialdesign.widgets.ColorSelector;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 
 
-public class Prefers extends ActionBarActivity {
+public class Prefers extends AppCompatActivity {
 
-    int icharge, a1, ibackground;
+    SwitchCompat enabledSwitch, darkSwitch, fullScreenSwitch;
+
+    int backgroundColor, progressBarColor, systemBarColor;
+    View background, progressBar, systemBar;
+    ImageView backgroundImage, progressBarImage, systemBarImage;
+
+    Toolbar toolbar;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prefs);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        enabledSwitch = (SwitchCompat) findViewById(R.id.enabledSwitch);
+        darkSwitch = (SwitchCompat) findViewById(R.id.darkSwitch);
+        fullScreenSwitch = (SwitchCompat) findViewById(R.id.fullScreenSwitch);
+        background = findViewById(R.id.backgroundColor);
+        progressBar = findViewById(R.id.progressBarColor);
+        systemBar = findViewById(R.id.systemBarColor);
+        backgroundImage = (ImageView) findViewById(R.id.backgroundColorImage);
+        progressBarImage = (ImageView) findViewById(R.id.progressBarImage);
+        systemBarImage = (ImageView) findViewById(R.id.systemBarImage);
+
         setSupportActionBar(toolbar);
         toolbar.inflateMenu(R.menu.menu_prefs);
 
+        ((ImageView) findViewById(R.id.backgroundImage)).setImageDrawable(WallpaperManager.getInstance(this).getDrawable());
 
-        findViewById(R.id.button21726).setOnClickListener(new View.OnClickListener() {
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        enabledSwitch.setChecked(prefs.getBoolean("isEnabled", false));
+        darkSwitch.setChecked(prefs.getBoolean("isDark", false));
+        fullScreenSwitch.setChecked(prefs.getBoolean("isFullScreen", false));
+
+        enabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                prefs.edit().putBoolean("isEnabled", isChecked).apply();
+            }
+        });
+
+        darkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                prefs.edit().putBoolean("isDark", isChecked).apply();
+            }
+        });
+
+        fullScreenSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                prefs.edit().putBoolean("isFullScreen", isChecked).apply();
+            }
+        });
+
+        backgroundColor = prefs.getInt("backgroundColor", ContextCompat.getColor(this, R.color.light));
+        progressBarColor = prefs.getInt("progressBarColor", ContextCompat.getColor(this, R.color.teal));
+        systemBarColor = prefs.getInt("systemBarColor", ContextCompat.getColor(this, R.color.lightblu));
+
+        backgroundImage.setImageDrawable(new ColorDrawable(backgroundColor));
+        progressBarImage.setImageDrawable(new ColorDrawable(progressBarColor));
+        progressBarImage.setImageDrawable(new ColorDrawable(progressBarColor));
+
+        background.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ColorSelector(Prefers.this, backgroundColor, new ColorSelector.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int i) {
+                        prefs.edit().putInt("backgroundColor", i).apply();
+                        backgroundImage.setImageDrawable(new ColorDrawable(i));
+                        backgroundColor = i;
+                    }
+                }).show();
+            }
+        });
+
+        progressBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ColorSelector(Prefers.this, progressBarColor, new ColorSelector.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int i) {
+                        prefs.edit().putInt("progressBarColor", i).apply();
+                        progressBarImage.setImageDrawable(new ColorDrawable(i));
+                        progressBarColor = i;
+                    }
+                }).show();
+            }
+        });
+
+        systemBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ColorSelector(Prefers.this, systemBarColor, new ColorSelector.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int i) {
+                        prefs.edit().putInt("systemBarColor", i).apply();
+                        systemBarImage.setImageDrawable(new ColorDrawable(i));
+                        systemBarColor = i;
+                    }
+                }).show();
+            }
+        });
+
+        findViewById(R.id.resetButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backgroundColor = ContextCompat.getColor(Prefers.this, R.color.light);
+                progressBarColor = ContextCompat.getColor(Prefers.this, R.color.teal);
+                systemBarColor = ContextCompat.getColor(Prefers.this, R.color.lightblu);
+
+                prefs.edit().putInt("backgroundColor", backgroundColor).apply();
+                prefs.edit().putInt("progressBarColor", progressBarColor).apply();
+                prefs.edit().putInt("systemBarColor", systemBarColor).apply();
+                backgroundImage.setImageDrawable(new ColorDrawable(backgroundColor)) ;
+                progressBarImage.setImageDrawable(new ColorDrawable(progressBarColor)) ;
+                systemBarImage.setImageDrawable(new ColorDrawable(systemBarColor)) ;
+
+                Toast.makeText(Prefers.this, "Reset", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.previewButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Prefers.this, Ripples.class));
             }
         });
 
-        final SharedPreferences settings = getSharedPreferences("com.james.chargescreen", 0);
-
-        settings.edit().putBoolean("installed", true).apply();
-
-        if(!settings.getBoolean("tutorial", false)){
+        if(!prefs.getBoolean("tutorial", false)){
             startActivity(new Intent(Prefers.this, FirstTime.class));
-            settings.edit().putBoolean("tutorial", true).apply();
+            prefs.edit().putBoolean("tutorial", true).apply();
         }
-
-        final Switch enable = (Switch) findViewById(R.id.switch2);
-        boolean isEnabled = settings.getBoolean("isEnabled", false);
-        enable.setChecked(isEnabled);
-
-        final Switch dark = (Switch) findViewById(R.id.switch1);
-        boolean isDark = settings.getBoolean("isDark", false);
-        dark.setChecked(isDark);
-
-        final Switch full = (Switch) findViewById(R.id.switchfull);
-        boolean isFull = settings.getBoolean("isFull", false);
-        full.setChecked(isFull);
-
-        icharge = settings.getInt("charge", getResources().getColor(R.color.teal));
-        a1 = settings.getInt("a1", getResources().getColor(R.color.lightblu));
-        ibackground = settings.getInt("bg", getResources().getColor(R.color.light));
-
-        findViewById(R.id.imageView).setBackgroundColor(ibackground);
-        findViewById(R.id.imageView2).setBackgroundColor(icharge);
-        findViewById(R.id.imageView3).setBackgroundColor(a1);
-
-        Button a = (Button) findViewById(R.id.button3);
-        Button charge = (Button) findViewById(R.id.button2);
-        Button reset = (Button) findViewById(R.id.button21);
-        Button bg = (Button) findViewById(R.id.button4);
-
-        ImageView bb = (ImageView) findViewById(R.id.imageView);
-        ImageView cc = (ImageView) findViewById(R.id.imageView2);
-        ImageView aa = (ImageView) findViewById(R.id.imageView3);
-
-        a.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ColorSelector action = new ColorSelector(Prefers.this, a1, new ColorSelector.OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int i) {
-                        settings.edit().putInt("a1", i).apply();
-                        a1 = i;
-                        findViewById(R.id.imageView3).setBackgroundColor(i);
-                    }
-                });
-                action.show();
-            }
-        });
-
-        aa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ColorSelector action = new ColorSelector(Prefers.this, a1, new ColorSelector.OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int i) {
-                        settings.edit().putInt("a1", i).apply();
-                        a1 = i;
-                        findViewById(R.id.imageView3).setBackgroundColor(i);
-                    }
-                });
-                action.show();
-            }
-        });
-
-        charge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ColorSelector charge = new ColorSelector(Prefers.this, icharge, new ColorSelector.OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int i) {
-                        settings.edit().putInt("charge", i).apply();
-                        icharge = i;
-                        findViewById(R.id.imageView2).setBackgroundColor(i);
-                    }
-                });
-                charge.show();
-            }
-        });
-
-        cc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ColorSelector charge = new ColorSelector(Prefers.this, icharge, new ColorSelector.OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int i) {
-                        settings.edit().putInt("charge", i).apply();
-                        icharge = i;
-                        findViewById(R.id.imageView2).setBackgroundColor(i);
-                    }
-                });
-                charge.show();
-            }
-        });
-
-        reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settings.edit().putInt("charge", getResources().getColor(R.color.teal)).apply();
-                settings.edit().putInt("a1", getResources().getColor(R.color.lightblu)).apply();
-                settings.edit().putInt("bg", getResources().getColor(R.color.light)).apply();
-                icharge = getResources().getColor(R.color.teal);
-                a1 = getResources().getColor(R.color.lightblu);
-                ibackground = getResources().getColor(R.color.light);
-                findViewById(R.id.imageView).setBackgroundColor(ibackground);
-                findViewById(R.id.imageView2).setBackgroundColor(icharge);
-                findViewById(R.id.imageView3).setBackgroundColor(a1);
-                Toast.makeText(Prefers.this, "Reset", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        bg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ColorSelector background = new ColorSelector(Prefers.this, ibackground, new ColorSelector.OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int i) {
-                        settings.edit().putInt("bg", i).apply();
-                        ibackground = i;
-                        findViewById(R.id.imageView).setBackgroundColor(i);
-                    }
-                });
-                background.show();
-            }
-        });
-
-        bb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ColorSelector background = new ColorSelector(Prefers.this, ibackground, new ColorSelector.OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int i) {
-                        settings.edit().putInt("bg", i).apply();
-                        ibackground = i;
-                        findViewById(R.id.imageView).setBackgroundColor(i);
-                    }
-                });
-                background.show();
-            }
-        });
-
-        enable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settings.edit().putBoolean("isEnabled", onToggleClicked(enable)).apply();
-            }
-        });
-
-        dark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settings.edit().putBoolean("isDark", onToggleClicked(dark)).apply();
-            }
-        });
-        full.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settings.edit().putBoolean("isFull", onToggleClicked(full)).apply();
-            }
-        });
-    }
-
-    public boolean onToggleClicked(Switch view) {
-        return view.isChecked();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_prefs, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(Prefers.this, About.class));
-            return true;
+        switch(item.getItemId()) {
+            case R.id.action_tutorial:
+                startActivity(new Intent(Prefers.this, FirstTime.class));
+                break;
+            case R.id.action_libraries:
+                new LibsBuilder().withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR).start(this);
+                break;
         }
-
-        if(id == R.id.action_tutorial) {
-            startActivity(new Intent(Prefers.this, FirstTime.class));
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }

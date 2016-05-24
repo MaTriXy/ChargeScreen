@@ -14,8 +14,7 @@ public class ChargeLauncher extends BroadcastReceiver {
         final SharedPreferences settings = context.getSharedPreferences("com.james.chargescreen", 0);
         if(settings.getBoolean("isEnabled", false)) {
             //start the app
-            Ripples ripples = new Ripples();
-            ripples.finish();
+            new Ripples().finish();
             Intent i = new Intent(Intent.ACTION_MAIN);
             i.addCategory(Intent.CATEGORY_HOME);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

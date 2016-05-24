@@ -1,7 +1,0 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context="com.james.chargescreen.About">
-    <item android:id="@+id/action_settings" android:title="Go to website"
-        android:icon="@mipmap/ic_internet"
-        app:showAsAction="always"/>
-</menu>
