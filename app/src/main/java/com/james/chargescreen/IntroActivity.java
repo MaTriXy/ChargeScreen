@@ -3,17 +3,13 @@ package com.james.chargescreen;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.alexandrepiveteau.library.tutorial.CustomAction;
 import com.alexandrepiveteau.library.tutorial.TutorialActivity;
 import com.alexandrepiveteau.library.tutorial.TutorialFragment;
 
 
-public class FirstTime extends TutorialActivity {
+public class IntroActivity extends TutorialActivity {
 
     private int[] BACKGROUND_COLORS = {
             Color.parseColor("#212121"),

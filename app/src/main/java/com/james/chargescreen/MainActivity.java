@@ -13,25 +13,28 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.gc.materialdesign.widgets.ColorSelector;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.thoughtbot.stencil.StencilView;
 
 
-public class Prefers extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
-    SwitchCompat enabledSwitch, darkSwitch, fullScreenSwitch;
+    private SwitchCompat enabledSwitch, darkSwitch, fullScreenSwitch;
 
-    int backgroundColor, progressBarColor, systemBarColor;
-    View background, progressBar, systemBar;
-    ImageView backgroundImage, progressBarImage, systemBarImage;
+    private int backgroundColor, progressBarColor, systemBarColor;
+    private View background, progressBar, systemBar;
+    private ImageView backgroundImage, progressBarImage, systemBarImage;
 
-    Toolbar toolbar;
-    SharedPreferences prefs;
+    private Toolbar toolbar;
+    private StencilView stencilView;
+
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,7 @@ public class Prefers extends AppCompatActivity {
         background.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ColorSelector(Prefers.this, backgroundColor, new ColorSelector.OnColorSelectedListener() {
+                new ColorSelector(MainActivity.this, backgroundColor, new ColorSelector.OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int i) {
                         prefs.edit().putInt("backgroundColor", i).apply();
@@ -106,7 +109,7 @@ public class Prefers extends AppCompatActivity {
         progressBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ColorSelector(Prefers.this, progressBarColor, new ColorSelector.OnColorSelectedListener() {
+                new ColorSelector(MainActivity.this, progressBarColor, new ColorSelector.OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int i) {
                         prefs.edit().putInt("progressBarColor", i).apply();
@@ -120,7 +123,7 @@ public class Prefers extends AppCompatActivity {
         systemBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ColorSelector(Prefers.this, systemBarColor, new ColorSelector.OnColorSelectedListener() {
+                new ColorSelector(MainActivity.this, systemBarColor, new ColorSelector.OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int i) {
                         prefs.edit().putInt("systemBarColor", i).apply();
@@ -134,9 +137,9 @@ public class Prefers extends AppCompatActivity {
         findViewById(R.id.resetButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backgroundColor = ContextCompat.getColor(Prefers.this, R.color.light);
-                progressBarColor = ContextCompat.getColor(Prefers.this, R.color.teal);
-                systemBarColor = ContextCompat.getColor(Prefers.this, R.color.lightblu);
+                backgroundColor = ContextCompat.getColor(MainActivity.this, R.color.light);
+                progressBarColor = ContextCompat.getColor(MainActivity.this, R.color.teal);
+                systemBarColor = ContextCompat.getColor(MainActivity.this, R.color.lightblu);
 
                 prefs.edit().putInt("backgroundColor", backgroundColor).apply();
                 prefs.edit().putInt("progressBarColor", progressBarColor).apply();
@@ -145,19 +148,19 @@ public class Prefers extends AppCompatActivity {
                 progressBarImage.setImageDrawable(new ColorDrawable(progressBarColor)) ;
                 systemBarImage.setImageDrawable(new ColorDrawable(systemBarColor)) ;
 
-                Toast.makeText(Prefers.this, "Reset", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Reset", Toast.LENGTH_SHORT).show();
             }
         });
 
         findViewById(R.id.previewButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Prefers.this, Ripples.class));
+                startActivity(new Intent(MainActivity.this, ChargeActivity.class));
             }
         });
 
         if(!prefs.getBoolean("tutorial", false)){
-            startActivity(new Intent(Prefers.this, FirstTime.class));
+            startActivity(new Intent(MainActivity.this, IntroActivity.class));
             prefs.edit().putBoolean("tutorial", true).apply();
         }
     }
@@ -172,7 +175,7 @@ public class Prefers extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_tutorial:
-                startActivity(new Intent(Prefers.this, FirstTime.class));
+                startActivity(new Intent(MainActivity.this, IntroActivity.class));
                 break;
             case R.id.action_libraries:
                 new LibsBuilder().withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR).start(this);

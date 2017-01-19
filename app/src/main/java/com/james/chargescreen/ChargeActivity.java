@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.skyfishjy.library.RippleBackground;
 
-public class Ripples extends Activity {
+public class ChargeActivity extends Activity {
 
     boolean isDark;
     int backgroundColor, progressBarColor, systemBarColor;
