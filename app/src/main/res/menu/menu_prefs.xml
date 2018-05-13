@@ -1,9 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_tutorial"
-        android:title="Tutorial"
+        android:title="@string/title_tutorial"
         app:showAsAction="never" />
-    <item android:id="@+id/action_libraries"
-        android:title="View Libraries"
+    <item
+        android:id="@+id/action_about"
+        android:title="@string/title_about"
         app:showAsAction="never" />
 </menu>

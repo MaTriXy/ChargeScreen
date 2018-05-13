@@ -93,4 +93,6 @@
     <string name="tutorial_screen_search_title">Like the app?</string>
     <string name="tutorial_screen_search_summary">Any feedback about this app is greatly appreciated. Please spend some time to rate it on the play store.</string>
     <string name="title_activity_about">About</string>
+    <string name="title_tutorial">Tutorial</string>
+    <string name="title_about">About</string>
 </resources>

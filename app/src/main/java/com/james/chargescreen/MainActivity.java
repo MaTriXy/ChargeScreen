@@ -17,10 +17,10 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.gc.materialdesign.widgets.ColorSelector;
-import com.mikepenz.aboutlibraries.Libs;
-import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.thoughtbot.stencil.StencilView;
+
+import james.colorpickerdialog.dialogs.ColorPickerDialog;
+import james.colorpickerdialog.dialogs.PreferenceDialog;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -95,12 +95,16 @@ public class MainActivity extends AppCompatActivity {
         background.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ColorSelector(MainActivity.this, backgroundColor, new ColorSelector.OnColorSelectedListener() {
+                new ColorPickerDialog(MainActivity.this).setPreference(backgroundColor).setListener(new PreferenceDialog.OnPreferenceListener<Integer>() {
                     @Override
-                    public void onColorSelected(int i) {
-                        prefs.edit().putInt("backgroundColor", i).apply();
-                        backgroundImage.setImageDrawable(new ColorDrawable(i));
-                        backgroundColor = i;
+                    public void onPreference(PreferenceDialog dialog, Integer preference) {
+                        prefs.edit().putInt("backgroundColor", preference).apply();
+                        backgroundImage.setImageDrawable(new ColorDrawable(preference));
+                        backgroundColor = preference;
+                    }
+
+                    @Override
+                    public void onCancel(PreferenceDialog dialog) {
                     }
                 }).show();
             }
@@ -109,12 +113,16 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ColorSelector(MainActivity.this, progressBarColor, new ColorSelector.OnColorSelectedListener() {
+                new ColorPickerDialog(MainActivity.this).setPreference(progressBarColor).setListener(new PreferenceDialog.OnPreferenceListener<Integer>() {
                     @Override
-                    public void onColorSelected(int i) {
-                        prefs.edit().putInt("progressBarColor", i).apply();
-                        progressBarImage.setImageDrawable(new ColorDrawable(i));
-                        progressBarColor = i;
+                    public void onPreference(PreferenceDialog dialog, Integer preference) {
+                        prefs.edit().putInt("progressBarColor", preference).apply();
+                        progressBarImage.setImageDrawable(new ColorDrawable(preference));
+                        progressBarColor = preference;
+                    }
+
+                    @Override
+                    public void onCancel(PreferenceDialog dialog) {
                     }
                 }).show();
             }
@@ -123,12 +131,16 @@ public class MainActivity extends AppCompatActivity {
         systemBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ColorSelector(MainActivity.this, systemBarColor, new ColorSelector.OnColorSelectedListener() {
+                new ColorPickerDialog(MainActivity.this).setPreference(systemBarColor).setListener(new PreferenceDialog.OnPreferenceListener<Integer>() {
                     @Override
-                    public void onColorSelected(int i) {
-                        prefs.edit().putInt("systemBarColor", i).apply();
-                        systemBarImage.setImageDrawable(new ColorDrawable(i));
-                        systemBarColor = i;
+                    public void onPreference(PreferenceDialog dialog, Integer preference) {
+                        prefs.edit().putInt("systemBarColor", preference).apply();
+                        systemBarImage.setImageDrawable(new ColorDrawable(preference));
+                        systemBarColor = preference;
+                    }
+
+                    @Override
+                    public void onCancel(PreferenceDialog dialog) {
                     }
                 }).show();
             }
@@ -177,8 +189,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_tutorial:
                 startActivity(new Intent(MainActivity.this, IntroActivity.class));
                 break;
-            case R.id.action_libraries:
-                new LibsBuilder().withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR).start(this);
+            case R.id.action_about:
+
                 break;
         }
         return super.onOptionsItemSelected(item);
